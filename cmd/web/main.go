@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/ninomaj/snippetbox/pkg/models/psql"
+
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
@@ -15,6 +17,7 @@ import (
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+	snippets *psql.SnippetModel
 }
 
 func init() {
@@ -35,6 +38,7 @@ func main() {
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
+		snippets: &psql.SnippetModel{DB: db},
 	}
 
 	srv := &http.Server{
