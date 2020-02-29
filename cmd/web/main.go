@@ -1,15 +1,28 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+}
+
+func init() {
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		panic("Error loading .env file")
+	}
 }
 
 func main() {
@@ -30,11 +43,31 @@ func main() {
 		Handler:  app.routes(),
 	}
 
+	// Database connection
+	dns := os.Getenv("DATABASE_URL")
+	db, err := openDB(dns)
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+	defer db.Close()
+	fmt.Println("You connected to db.")
+
 	// Use the http.ListenAndServe() function to start a new web server. We pass in
 	// two parameters: the TCP network address to listen on (in this case ":4000")
 	// and the servemux we just created. If http.ListenAndServe() returns an error
 	// we use the log.Fatal() function to log the error message and exit.
 	infoLog.Printf("Starting server on %s", *addr)
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	errorLog.Fatal(err)
+}
+
+func openDB(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", dsn)
+	if err != nil {
+		return nil, err
+	}
+	if err = db.Ping(); err != nil {
+		return nil, err
+	}
+	return db, nil
 }
