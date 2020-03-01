@@ -35,6 +35,15 @@ func main() {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
+	// Database connection
+	dns := os.Getenv("DATABASE_URL")
+	db, err := openDB(dns)
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+	defer db.Close()
+	fmt.Println("You connected to db.")
+
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
@@ -46,15 +55,6 @@ func main() {
 		ErrorLog: errorLog,
 		Handler:  app.routes(),
 	}
-
-	// Database connection
-	dns := os.Getenv("DATABASE_URL")
-	db, err := openDB(dns)
-	if err != nil {
-		errorLog.Fatal(err)
-	}
-	defer db.Close()
-	fmt.Println("You connected to db.")
 
 	// Use the http.ListenAndServe() function to start a new web server. We pass in
 	// two parameters: the TCP network address to listen on (in this case ":4000")
