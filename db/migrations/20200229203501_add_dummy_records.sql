@@ -21,5 +21,4 @@ INSERT INTO snippets (title, content, created, expires) VALUES (
 );
 
 -- migrate:down
-DELETE FROM snippets
-WHERE id IN (1, 2, 3);
+DELETE FROM snippets;

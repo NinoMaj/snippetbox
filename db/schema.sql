@@ -87,4 +87,5 @@ CREATE INDEX idx_snippets_created ON public.snippets USING btree (created);
 --
 
 INSERT INTO public.schema_migrations (version) VALUES
-    ('20200229202544');
+    ('20200229202544'),
+    ('20200229203501');
