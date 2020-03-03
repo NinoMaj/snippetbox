@@ -75,7 +75,9 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = ts.Execute(w, s)
+	data := &templateData{Snippet: s}
+
+	err = ts.Execute(w, data)
 	if err != nil {
 		app.serverError(w, err)
 	}
