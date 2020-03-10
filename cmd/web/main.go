@@ -9,10 +9,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/ninomaj/snippetbox/pkg/models/psql"
-
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/ninomaj/snippetbox/pkg/models/psql"
 )
 
 type application struct {
