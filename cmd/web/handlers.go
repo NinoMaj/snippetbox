@@ -8,8 +8,6 @@ import (
 	"github.com/ninomaj/snippetbox/pkg/models"
 )
 
-// Define a home handler function which writes a byte slice containing
-// "Hello from Snippetbox" as the response body.
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 	s, err := app.snippets.Latest()
@@ -23,7 +21,6 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// Add a showSnippet handler function.
 func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	if err != nil || id < 1 {
@@ -45,7 +42,6 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// Add a createSnippet handler function.
 func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -53,8 +49,6 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Use the r.PostForm.Get() method to retrieve the relevant data fields
-	// from the r.PostForm map.
 	title := r.PostForm.Get("title")
 	content := r.PostForm.Get("content")
 	expires := r.PostForm.Get("expires")
