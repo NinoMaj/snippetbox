@@ -8,7 +8,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/golangcollege/sessions"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/ninomaj/snippetbox/pkg/models/psql"
@@ -17,6 +19,7 @@ import (
 type application struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
+	session       *sessions.Session
 	snippets      *psql.SnippetModel
 	templateCache map[string]*template.Template
 }
@@ -31,14 +34,17 @@ func init() {
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
+	// dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "Postgres data source name")
+	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret key")
 	flag.Parse()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// Database connection
-	dns := os.Getenv("DATABASE_URL")
-	db, err := openDB(dns)
+	dsn := os.Getenv("DATABASE_URL")
+	db, err := openDB(dsn)
+	// db, err := openDB(*dsn)
 	if err != nil {
 		errorLog.Fatal(err)
 	}
@@ -50,9 +56,13 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
+	session := sessions.New([]byte(*secret))
+	session.Lifetime = 12 * time.Hour
+
 	app := &application{
 		errorLog:      errorLog,
 		infoLog:       infoLog,
+		session:       session,
 		snippets:      &psql.SnippetModel{DB: db},
 		templateCache: templateCache,
 	}
