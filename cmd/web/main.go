@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"database/sql"
 	"flag"
 	"fmt"
@@ -60,6 +61,15 @@ func main() {
 	session.Lifetime = 12 * time.Hour
 	session.Secure = true // When using TLS
 
+	// Initialize a tls.Config struct to hold the non-default TLS settings we want
+	// the server to use.
+	tlsConfig := &tls.Config{
+		PreferServerCipherSuites: true,
+		CurvePreferences:         []tls.CurveID{tls.X25519, tls.CurveP256},
+		// Uncomment to support min TLS version (more secure, but limiting older browsers to connect)
+		// MinVersion: tls.VersionTLS12,
+	}
+
 	app := &application{
 		errorLog:      errorLog,
 		infoLog:       infoLog,
@@ -69,9 +79,10 @@ func main() {
 	}
 
 	srv := &http.Server{
-		Addr:     *addr,
-		ErrorLog: errorLog,
-		Handler:  app.routes(),
+		Addr:      *addr,
+		ErrorLog:  errorLog,
+		Handler:   app.routes(),
+		TLSConfig: tlsConfig,
 	}
 
 	// Use the http.ListenAndServe() function to start a new web server. We pass in
