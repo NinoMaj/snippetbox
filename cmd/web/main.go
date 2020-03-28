@@ -61,6 +61,14 @@ func main() {
 	session.Lifetime = 12 * time.Hour
 	session.Secure = true // When using TLS
 
+	app := &application{
+		errorLog:      errorLog,
+		infoLog:       infoLog,
+		session:       session,
+		snippets:      &psql.SnippetModel{DB: db},
+		templateCache: templateCache,
+	}
+
 	// Initialize a tls.Config struct to hold the non-default TLS settings we want
 	// the server to use.
 	tlsConfig := &tls.Config{
@@ -70,19 +78,15 @@ func main() {
 		// MinVersion: tls.VersionTLS12,
 	}
 
-	app := &application{
-		errorLog:      errorLog,
-		infoLog:       infoLog,
-		session:       session,
-		snippets:      &psql.SnippetModel{DB: db},
-		templateCache: templateCache,
-	}
-
 	srv := &http.Server{
 		Addr:      *addr,
 		ErrorLog:  errorLog,
 		Handler:   app.routes(),
 		TLSConfig: tlsConfig,
+		// Closing all keep-alive connections after 1 min of inactivity
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
 	// Use the http.ListenAndServe() function to start a new web server. We pass in
