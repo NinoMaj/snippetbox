@@ -84,7 +84,9 @@ func main() {
 		Handler:   app.routes(),
 		TLSConfig: tlsConfig,
 		// Closing all keep-alive connections after 1 min of inactivity
-		IdleTimeout:  time.Minute,
+		IdleTimeout: time.Minute,
+		// If request header or body is being read for more than 5 s,
+		// close underline connection to mitigrate risk of slow-client attacks
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
