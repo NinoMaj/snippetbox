@@ -23,6 +23,7 @@ type application struct {
 	session       *sessions.Session
 	snippets      *psql.SnippetModel
 	templateCache map[string]*template.Template
+	users         *psql.UserModel
 }
 
 func init() {
@@ -67,6 +68,7 @@ func main() {
 		session:       session,
 		snippets:      &psql.SnippetModel{DB: db},
 		templateCache: templateCache,
+		users:         &psql.UserModel{DB: db},
 	}
 
 	// Initialize a tls.Config struct to hold the non-default TLS settings we want
