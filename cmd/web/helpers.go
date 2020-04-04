@@ -27,6 +27,7 @@ func (app *application) addDefaultData(td *templateData, r *http.Request) *templ
 	if td == nil {
 		td = &templateData{}
 	}
+	td.AuthenticatedUser = app.authenticatedUser(r)
 	td.CurrentYear = time.Now().Year()
 
 	// Use the PopString() method to retrieve the value for the "flash" key.
@@ -63,4 +64,10 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, name stri
 	// is another time where we pass our http.ResponseWriter to a function that
 	// takes an io.Writer.
 	buf.WriteTo(w)
+}
+
+// The authenticatedUser method returns the ID of the current user from the
+// session, or zero if the request is from an unauthenticated user.
+func (app *application) authenticatedUser(r *http.Request) int {
+	return app.session.GetInt(r, "userID")
 }
