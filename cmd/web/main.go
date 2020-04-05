@@ -60,7 +60,8 @@ func main() {
 
 	session := sessions.New([]byte(*secret))
 	session.Lifetime = 12 * time.Hour
-	session.Secure = true // When using TLS
+	session.Secure = true                      // When using TLS
+	session.SameSite = http.SameSiteStrictMode // Default: Lax
 
 	app := &application{
 		errorLog:      errorLog,

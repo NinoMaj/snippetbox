@@ -12,7 +12,7 @@ func (app *application) routes() http.Handler {
 
 	// Middleware chain containing the middleware specific to
 	// our dynamic application routes.
-	dynamicMiddleware := alice.New(app.session.Enable)
+	dynamicMiddleware := alice.New(app.session.Enable, noSurf)
 
 	mux := pat.New()
 	mux.Get("/", dynamicMiddleware.ThenFunc(app.home))
