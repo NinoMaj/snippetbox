@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"time"
 
 	"github.com/golangcollege/sessions"
@@ -30,8 +31,14 @@ type application struct {
 	users         *psql.UserModel
 }
 
+const projectDirName = "snippetbox"
+
 func init() {
-	err := godotenv.Load("../../.env")
+	re := regexp.MustCompile(`^(.*` + projectDirName + `)`)
+	cwd, _ := os.Getwd()
+	rootPath := re.Find([]byte(cwd))
+
+	err := godotenv.Load(string(rootPath) + `/.env`)
 
 	if err != nil {
 		panic("Error loading .env file")
