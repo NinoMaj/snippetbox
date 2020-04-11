@@ -31,7 +31,7 @@ type application struct {
 }
 
 func init() {
-	err := godotenv.Load(".env")
+	err := godotenv.Load("../../.env")
 
 	if err != nil {
 		panic("Error loading .env file")
