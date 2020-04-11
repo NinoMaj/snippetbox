@@ -8,13 +8,14 @@ import (
 )
 
 func TestPing(t *testing.T) {
+	t.Parallel() // Mark that it is OK to run this test in parallel
 	// Initialize a new httptest.ResponseRecorder.
 	rr := httptest.NewRecorder()
 
 	// Initialize a new dummy http.Request.
 	r, err := http.NewRequest("GET", "/", nil)
 	if err != nil {
-			t.Fatal(err)
+		t.Fatal(err)
 	}
 
 	// Call the ping handler function, passing in the
@@ -28,7 +29,7 @@ func TestPing(t *testing.T) {
 	// We can then examine the http.Response to check that the status code
 	// written by the ping handler was 200.
 	if rs.StatusCode != http.StatusOK {
-			t.Errorf("want %d; got %d", http.StatusOK, rs.StatusCode)
+		t.Errorf("want %d; got %d", http.StatusOK, rs.StatusCode)
 	}
 
 	// And we can check that the response
@@ -40,6 +41,6 @@ func TestPing(t *testing.T) {
 	}
 
 	if string(body) != "OK" {
-      t.Errorf("want body to equal %q", "OK")
+		t.Errorf("want body to equal %q", "OK")
 	}
 }

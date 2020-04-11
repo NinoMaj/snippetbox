@@ -8,4 +8,7 @@ go run cmd/web/!(*_test).go
 
 ```bash
 go test ./...
+
+# Run only specific test with regex
+go test -v -run="^TestPing$"
 ```
