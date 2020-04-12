@@ -15,6 +15,7 @@ import (
 	"github.com/golangcollege/sessions"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/ninomaj/snippetbox/pkg/models"
 	"github.com/ninomaj/snippetbox/pkg/models/psql"
 )
 
@@ -23,12 +24,20 @@ type contextKey string
 var contextKeyUser = contextKey("user")
 
 type application struct {
-	errorLog      *log.Logger
-	infoLog       *log.Logger
-	session       *sessions.Session
-	snippets      *psql.SnippetModel
+	errorLog *log.Logger
+	infoLog  *log.Logger
+	session  *sessions.Session
+	snippets interface {
+		Insert(string, string, string) (int, error)
+		Get(int) (*models.Snippet, error)
+		Latest() ([]*models.Snippet, error)
+	}
 	templateCache map[string]*template.Template
-	users         *psql.UserModel
+	users         interface {
+		Insert(string, string, string) error
+		Authenticate(string, string) (int, error)
+		Get(int) (*models.User, error)
+	}
 }
 
 const projectDirName = "snippetbox"
