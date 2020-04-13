@@ -141,7 +141,3 @@ CREATE INDEX idx_users_id ON public.users USING btree (id);
 -- Dbmate schema migrations
 --
 
-INSERT INTO public.schema_migrations (version) VALUES
-    ('20200229202544'),
-    ('20200229203501'),
-    ('20200328211800');
